@@ -3,8 +3,8 @@ from classes import *
 def read_bill_items(path):
     file_txt = open(path, "r")
 
-    for line in file_txt:
-        values = line.split()
+    for line in [line.replace("\|", " - ") for line in file_txt.readlines() if line != ""]:
+        values = line.split("|")
 
         billitem_id = values[0]
         bill_id = values[1]
@@ -15,13 +15,13 @@ def read_bill_items(path):
         discount_2 = float(values[6])
 
         BillItem(billitem_id, bill_id, product_id, units, price, discount_1, discount_2)
-    
+
 
 def read_customers(path):
     file_txt = open(path, "r")
 
-    for line in file_txt:
-        values = line.split()
+    for line in [line.replace("\|", " - ") for line in file_txt.readlines() if line != ""]:
+        values = line.split("|")
         customer_id = values[0]
         company = values[1]
         national_id = values[2]
@@ -40,8 +40,8 @@ def read_customers(path):
 def read_bills(path):
     file_txt = open(path, "r")
 
-    for line in file_txt:
-        values = line.split()
+    for line in [line.replace("\|", " - ") for line in file_txt.readlines() if line != ""]:
+        values = line.split("|")
 
         bill_id = values[0]
         bill_number = values[1]
@@ -57,8 +57,8 @@ def read_bills(path):
 def read_countries(path):
     file_txt = open(path, "r")
 
-    for line in file_txt:
-        values = line.split()
+    for line in [line.replace("\|", " - ") for line in file_txt.readlines() if line != ""]:
+        values = line.split("|")
 
         country_id = values[0]
         country_full = values[1]
@@ -70,9 +70,11 @@ def read_countries(path):
 def read_products(path):
     file_txt = open(path, "r")
 
-    for line in file_txt:
-        values = line.split()
+    file_txt_raw = ''.join(file_txt.readlines()).replace("\\\n", " ")
+    file_lines = [line.replace("\|", " - ") for line in file_txt_raw.split("\n") if line != ""]
 
+    for line in file_lines:
+        values = line.split("|")
         product_id = values[0]
         sku = values[1]
         product_description = values[2]
