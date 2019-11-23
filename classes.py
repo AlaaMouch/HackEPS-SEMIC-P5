@@ -3,6 +3,7 @@ class Product:
 	container = ProductDict
 	def __init__(self, product_id, sku, product_description, price_cost, price_sale):
 		self.product_id = product_id
+		self.sku = sku
 		self.product_description = product_description
 		self.price_cost = price_cost
 		self.price_sale = price_sale
