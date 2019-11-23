@@ -53,6 +53,7 @@ class Bill:
 		self.bill_id = bill_id
 		self.bill_number = bill_number
 		self.bill_date = bill_date
+		self.bill_items = []
 		self.customer_id = customer_id
 		self.discount = discount
 		self.soon_payment = soon_payment
