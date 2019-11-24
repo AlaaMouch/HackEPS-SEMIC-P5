@@ -24,30 +24,17 @@ if __name__ == '__main__':
         cum_price = 0.0
         for row in value['bill_items']:
             unit_price = np.double(row['price'])
-            #unit_price -= float(row['discount1'])
-            #unit_price -= float(row['discount2'])
-            unit_price *= (1 - (np.double(row['discount1']) / 100.0))
-            unit_price *= (1 - (np.double(row['discount2']) / 100.0))
-            #unit_price *= (1 - max(np.double(row['discount1']), np.double(row['discount2'])) / 100.0)
-            #unit_price *= (1 - (np.double(row['discount1']) + np.double(row['discount2'])) / 100.0)
 
-            cum_price += unit_price * np.double(row['units'])
+            unit_price = (int(unit_price * 100) / 100.0) * (1 - (np.double(row['discount1']) / 100.0))
+            unit_price = (int(unit_price * 100) / 100.0) * (1 - (np.double(row['discount2']) / 100.0))
 
-        #cum_price *= (1 - (- np.double(value['shippingamount']) + np.double(value['discount']) + np.double(value['soonpayment'])) / 100.0)
-        #cum_price *= (1 + np.double(value['shippingamount']) / 100.0)
-        cum_price *= (1 - np.double(value['soonpayment']) / 100.0)
-        #cum_price *= (1 - (np.double(value['discount']) + np.double(value['soonpayment'])) / 100.0)
-        cum_price *= (1 - np.double(value['discount']) / 100.0)
-        #cum_price -= float(value['discount'])
-        #cum_price -= float(value['soonpayment'])
+            cum_price += (int(unit_price * 100) / 100.0) * np.double(row['units'])
 
+        cum_price = (int(cum_price * 100) / 100.0) * (1 - np.double(value['discount']) / 100.0)
+        cum_price = (int(cum_price * 100) / 100.0) * (1 - np.double(value['soonpayment']) / 100.0)
+        cum_price = (int(cum_price * 100) / 100.0) + np.double(value['shippingamount'])
 
-        #cum_price *= (1 - (np.double(value['discount']) + np.double(value['soonpayment'])) / 100.0)
-        cum_price += (np.double(value['shippingamount']))
-        #cum_price *= (1 + (np.double(value['shippingamount'])) / 100.0)
-
-        floor_price += np.double('%.1f'%(cum_price))
-        price += cum_price
+        price += int(cum_price * 100) / 100.0
 
     print(price)
     print(floor_price)
