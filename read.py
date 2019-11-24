@@ -1,3 +1,4 @@
+import numpy as np
 from classes import *
 
 def read_bill_items(path):
@@ -9,10 +10,10 @@ def read_bill_items(path):
         billitem_id = values[0]
         bill_id = values[1]
         product_id = values[2]
-        units = float(values[3])
-        price = float(values[4])
-        discount_1 = float(values[5])
-        discount_2 = float(values[6])
+        units = np.float64(values[3])
+        price = np.float64(values[4])
+        discount_1 = np.float64(values[5])
+        discount_2 = np.float64(values[6])
 
         BillItem(billitem_id, bill_id, product_id, units, price, discount_1, discount_2)
 
@@ -47,9 +48,9 @@ def read_bills(path):
         bill_number = values[1]
         bill_date = values[2]
         customer_id = values[3]
-        discount = float(values[4])
-        soon_payment = float(values[5])
-        shipping_amount = float(values[6])
+        discount = np.float64(values[4])
+        soon_payment = np.float64(values[5])
+        shipping_amount = np.float64(values[6])
 
         Bill(bill_id, bill_number, bill_date, customer_id, discount, soon_payment, shipping_amount)
 
@@ -78,8 +79,8 @@ def read_products(path):
         product_id = values[0]
         sku = values[1]
         product_description = values[2]
-        price_cost = float(values[3])
-        price_sale = float(values[4])
+        price_cost = np.float64(values[3])
+        price_sale = np.float64(values[4])
 
         Product(product_id, sku, product_description, price_cost, price_sale)
 
