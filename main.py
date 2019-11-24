@@ -16,43 +16,59 @@ for bill_item_id in BillItemDict.keys():
 	bill_item_instance = BillItemDict[bill_item_id]
 	BillDict[bill_item_instance.bill_id].bill_items.append(bill_item_instance)
 
-def round2dec(val):
-#	return val
-	return math.floor(100.0*val)/100.0
+def round_dec(val, num_decimals):
+	power_ten = np.power(np.float64(10.0), num_decimals)
+	return np.floor(power_ten*val)/power_ten
 
 def apply_percentage(val, percentage):
-	return val*((np.float64(100.0) - np.float64(percentage))/np.float64(100.0))
+	hundred = np.float64(100.0)
+	return val*((hundred - percentage)/hundred)
 
+num_dec = 2
+reverse_sort = True
 sum = np.float64(0.0)
 sum_s = np.float64(0.0)
+
+values = []
+values_s = []
 for bill_id in BillDict.keys():
 	bill_instance = BillDict[bill_id]
-	partial = np.float64(0.0)
-	partial_s = np.float64(0.0)
+
+	values_p = [bill_instance.shipping_amount]
+	values_p_s = [bill_instance.shipping_amount]
 	for bill_item_instance in bill_instance.bill_items:
-#		product_item = ProductDict[bill_item_instance.product_id]
-		cost = bill_item_instance.units
-#		cost *= product_item.price_sale
-		cost *= bill_item_instance.price
+		cost = bill_item_instance.units * bill_item_instance.price
 		cost = apply_percentage(cost, bill_item_instance.discount_1)
 		cost = apply_percentage(cost, bill_item_instance.discount_2)
-		partial += cost
 
-		cost_s = bill_item_instance.units
-#		cost_s *= product_item.price_sale
-		cost_s *= bill_item_instance.price
-		cost_s = round2dec(apply_percentage(cost_s, bill_item_instance.discount_1))
-		cost_s = round2dec(apply_percentage(cost_s, bill_item_instance.discount_2))
-		partial_s += cost_s
+		cost_s = bill_item_instance.units * bill_item_instance.price
+		cost_s = round_dec(apply_percentage(cost_s, bill_item_instance.discount_1), num_dec)
+		cost_s = round_dec(apply_percentage(cost_s, bill_item_instance.discount_2), num_dec)
+
+		values_p.append(cost)
+		values_p_s.append(cost_s)
+
+	partial = np.float64(0.0)
+	partial_s = np.float64(0.0)
+
+	values_p.sort(reverse=reverse_sort)
+	values_p_s.sort(reverse=reverse_sort)
+	for cost in values_p:     partial += cost
+	for cost_s in values_p_s: partial_s += cost_s
+
 	partial = apply_percentage(partial, bill_instance.discount)
 	partial = apply_percentage(partial, bill_instance.soon_payment)
-	partial += bill_instance.shipping_amount
-	sum += partial
 
-	partial_s = round2dec(apply_percentage(partial_s, bill_instance.discount))
-	partial_s = round2dec(apply_percentage(partial_s, bill_instance.soon_payment))
-	partial_s += bill_instance.shipping_amount
-	sum_s += partial_s
+	partial_s = round_dec(apply_percentage(partial_s, bill_instance.discount), num_dec)
+	partial_s = round_dec(apply_percentage(partial_s, bill_instance.soon_payment), num_dec)
+
+	if len(values_p) > 1:   values.append(partial)
+	if len(values_p_s) > 1: values_s.append(partial_s)
+
+values.sort(reverse=reverse_sort)
+values_s.sort(reverse=reverse_sort)
+for cost in values:     sum += cost
+for cost_s in values_s: sum_s += cost_s
 
 print("     sum: {}".format(sum))
 print("  sliced: {}".format(sum_s))
@@ -61,3 +77,5 @@ print()
 
 expected_sum = 1392964.84
 print("expected: {}".format(expected_sum))
+print("    diff: {}".format(abs(expected_sum - sum)))
+print("  diff_s: {}".format(abs(expected_sum - sum_s)))
