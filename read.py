@@ -1,5 +1,7 @@
-import numpy as np
+from decimal import Decimal as dec
 from classes import *
+
+dec_hundred = dec('100.0')
 
 def read_bill_items(path):
     file_txt = open(path, "r")
@@ -10,10 +12,10 @@ def read_bill_items(path):
         billitem_id = values[0]
         bill_id = values[1]
         product_id = values[2]
-        units = np.float64(values[3])
-        price = np.float64(values[4])
-        discount_1 = np.float64(values[5])
-        discount_2 = np.float64(values[6])
+        units = dec(values[3])
+        price = dec(values[4])
+        discount_1 = (dec_hundred - dec(values[5]))/dec_hundred
+        discount_2 = (dec_hundred - dec(values[6]))/dec_hundred
 
         BillItem(billitem_id, bill_id, product_id, units, price, discount_1, discount_2)
 
@@ -48,9 +50,9 @@ def read_bills(path):
         bill_number = values[1]
         bill_date = values[2]
         customer_id = values[3]
-        discount = np.float64(values[4])
-        soon_payment = np.float64(values[5])
-        shipping_amount = np.float64(values[6])
+        discount = (dec_hundred - dec(values[4]))/dec_hundred
+        soon_payment = (dec_hundred - dec(values[5]))/dec_hundred
+        shipping_amount = dec(values[6])
 
         Bill(bill_id, bill_number, bill_date, customer_id, discount, soon_payment, shipping_amount)
 
@@ -79,16 +81,16 @@ def read_products(path):
         product_id = values[0]
         sku = values[1]
         product_description = values[2]
-        price_cost = np.float64(values[3])
-        price_sale = np.float64(values[4])
+        price_cost = dec(values[3])
+        price_sale = dec(values[4])
 
         Product(product_id, sku, product_description, price_cost, price_sale)
 
 
 def read_dataset(path):
-    read_products(path + "/products.txt")
-    read_countries(path + "/countries.txt")
-    read_customers(path + "/customers.txt")
+#    read_products(path + "/products.txt")
+#    read_countries(path + "/countries.txt")
+#    read_customers(path + "/customers.txt")
     read_bills(path + "/bills.txt")
     read_bill_items(path + "/billitems.txt")
 
